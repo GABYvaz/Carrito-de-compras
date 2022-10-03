@@ -4,12 +4,25 @@ const listaCursos = document.querySelector('#lista-cursos');
 const contenedorCarrito = document.querySelector('#lista-carrito tbody');
 const vaciarCarritoBtn = document.querySelector('#vaciar-carrito');
 
+let listadoCarrito = [];
 
 const agregarCurso =(e) => {
     e.preventDefault();
     if(e.target.classList.contains('agregar-carrito')){
-        console.log("Presionaste el boton");
+        const curso = e.target.parentElement.parentElement;
+        const infoCurso = {
+            imagen: curso.querySelector('img').src,
+            nombre: curso.querySelector('h4').textContent,
+            precio: curso.querySelector('p.precio').textContent,
+            id: curso.querySelector('.agregar-carrito').getAttribute('data-id'),
+            cantidad: 1        
+                }           
+                agrgarCarrito(infoCurso);
     }
+}
+const agrgarCarrito = curso => {
+    listadoCarrito = [...listadoCarrito, curso]
+    console.log(listadoCarrito);
 }
 
 const cargaEventListener = () => {
