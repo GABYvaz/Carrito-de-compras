@@ -17,33 +17,43 @@ const agregarCurso =(e) => {
             id: curso.querySelector('.agregar-carrito').getAttribute('data-id'),
             cantidad: 1        
                 }           
-                agrgarCarrito(infoCurso);
+                agregarCarrito(infoCurso);
     }
 }
 
-const agrgarCarrito = curso => {
-    listadoCarrito = [...listadoCarrito, curso]
+
+const agregarCarrito = curso => {
+    //console.log("Curso agregar")
+    //console.log("curso.id")
+    //console.log("listado de cursos")
+    //listadoCarrito.forEach(curso => console.log(curso.id))
+    if(listadoCarrito.some(cursoInCarrito =>cursoInCarrito.id === curso.id)){
+        let carrito=listadoCarrito.map(cursoInCarrito => {
+            if (cursoInCarrito.id === curso.id){
+                cursoInCarrito.cantidad++;
+                return cursoInCarrito;
+            }else{
+                return cursoInCarrito;
+            }
+        })
+        listadoCarrito = [...carrito];
+    }else{
+        listadoCarrito = [...listadoCarrito, curso]
+    }
     console.log(listadoCarrito);
     generaHTML();
-}
-
+    }
+   
 const generaHTML =() => {
     vaciarCarrito();
     listadoCarrito.forEach(curso => {
         const row = document.createElement('tr');
         const cursoHTML = `
-        <td>
-        ${curso.nombre}
-        </td>    
-        <td>
-        <img src="${curso.imagen}" width=100>
-        </td>
-        <td>
-        ${curso.precio}
-        </td>
-        <td>
-        ${curso.cantidad}
-        </td>
+        <td>${curso.nombre}</td>    
+        <td><img src="${curso.imagen}" width=100></td>
+        <td>${curso.precio}</td>
+        <td>${curso.cantidad}</td>
+        <td> <a href="#" class="borrar-curso" data-id="${curso.id}">X</a></td>
         `;
         row.innerHTML = cursoHTML;
         contenedorCarrito.appendChild(row);
@@ -51,10 +61,22 @@ const generaHTML =() => {
 }
 
 const vaciarCarrito = () => {
+    contenedorCarrito.innerHTML="";
 }
+const eliminarCurso = (e)=>{
+    e.preventDefault();
+    if(e.target.classList.contains('borrar-curso')){
+        let idCurso = e.target.getAttribute('data-id')
+        let carrito = listadoCarrito.filter(cursoInCarrito => cursoInCarrito.id !== idCurso)
+           listadoCarrito= [...carrito];
+           generaHTML();
+        }
+    }
 const cargaEventListener = () => {
     //Agregar funcion de cursos al carrito
     listaCursos.addEventListener('click',agregarCurso);
+    contenedorCarrito.addEventListener('click',eliminarCurso);
+    vaciarCarritoBtn.addEventListener('click',vaciarCarrito);
     }
 
     cargaEventListener();
